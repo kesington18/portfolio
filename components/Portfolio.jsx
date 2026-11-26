@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
-import { profile, projects, skills, typed } from "./data";
+import { profile, projects, skills, titles, contact } from "./data";
 import CodeRain from "./CodeRain";
 import Bubbles from "./Bubbles";
 import Typewriter from "./Typewriter";
@@ -91,6 +91,33 @@ function Customizer({ cfg, set, reset }) {
   );
 }
 
+const q = (v) => `"${v}"`;
+const list = (a) => `[${a.map(q).join(", ")}]`;
+const Key = ({ k }) => <span className="text-accent-ink">{q(k)}</span>;
+const Punc = ({ children }) => <span className="text-muted">{children}</span>;
+
+function AboutCard({ a }) {
+  return (
+    <div onMouseMove={glow} className="card max-w-4xl rounded-2xl border border-line bg-surface/70 p-6 font-mono text-sm leading-7 backdrop-blur md:p-8">
+      <TermBar label="about.config.py" />
+      <p className="text-muted"># who I am</p>
+      <p className="text-ink">{'"""'}{a.intro}{'"""'}</p>
+      <p className="mt-4"><span className="text-ink">me</span><Punc> = {"{"}</Punc></p>
+      <p className="break-words pl-6"><Key k="studying" /><Punc>: </Punc><span className="text-ink">{q(a.studying)}</span><Punc>,</Punc></p>
+      <p className="break-words pl-6"><Key k="builds" /><Punc>: </Punc><span className="text-ink">{list(a.builds)}</span><Punc>,</Punc></p>
+      <p className="pl-6"><Key k="shipped" /><Punc>: {"{"}</Punc></p>
+      {a.built.map((b) => (
+        <p key={b.name} className="break-words pl-12"><Key k={b.name} /><Punc>: </Punc><span className="text-ink">{q(b.line)}</span><Punc>,</Punc></p>
+      ))}
+      <p className="pl-6"><Punc>{"},"}</Punc></p>
+      <p className="break-words pl-6"><Key k="outside_the_editor" /><Punc>: </Punc><span className="text-ink">{list(a.hobbies)}</span><Punc>,</Punc></p>
+      <p className="break-words pl-6"><Key k="teamwork" /><Punc>: </Punc><span className="text-ink">{q(a.team)}</span><Punc>,</Punc></p>
+      <p><Punc>{"}"}</Punc></p>
+      <p className="mt-3 text-muted">{">>> "}<span className="caret inline-block h-[1.1em] w-[2px] translate-y-[3px] bg-accent" /></p>
+    </div>
+  );
+}
+
 export default function Portfolio() {
   const [cfg, setCfg] = useState(DEFAULTS);
   const [ready, setReady] = useState(false);
@@ -134,27 +161,28 @@ export default function Portfolio() {
       </nav>
 
       <section className="relative flex min-h-screen items-center px-6">
-        <div className="relative z-10 mx-auto w-full max-w-4xl">
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.8 }} className="mb-6 min-h-8 text-lg md:text-xl"><Typewriter phrases={typed} /></motion.p>
+        <div className="relative z-10 mx-auto w-full max-w-5xl pb-16 pt-28">
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.8 }} className="mb-6 font-mono text-lg md:text-xl"><span className="text-accent-ink">$ </span>hello, world. I’m</motion.p>
           <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease, delay: 0.3 }}
             className="font-display text-4xl font-bold leading-tight tracking-tight md:text-6xl">{profile.name}</motion.h1>
-          <h2 className="mt-4 flex flex-wrap gap-x-3 font-display text-2xl font-medium md:text-4xl">
-            {profile.title.split(" ").map((w, i) => (
-              <motion.span key={w} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease, delay: 0.6 + i * 0.12 }} className="rgb-text">{w}</motion.span>
-            ))}
-          </h2>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.9 }} className="mt-6 max-w-xl text-lg text-muted">{profile.tagline}</motion.p>
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.3, duration: 0.8, ease }} className="mt-10 flex gap-4">
+          <motion.h2 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 0.8 }}
+            className="mt-4 min-h-[1.4em] font-display text-2xl font-medium md:text-4xl">
+            <Typewriter phrases={titles} prompt={false} textClass="rgb-text" />
+          </motion.h2>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 0.9 }} className="mt-6 max-w-2xl text-lg text-muted">{profile.tagline}</motion.p>
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.8, ease }} className="mt-10 flex flex-wrap items-center gap-4">
             <a href="#projects" className="rounded-full bg-accent px-6 py-3 font-medium text-on-accent transition-transform hover:scale-105">View my work</a>
             <a href="#contact" className="rounded-full border border-line px-6 py-3 transition-colors hover:border-accent hover:text-accent-ink">Get in touch</a>
+            <a href={profile.github} target="_blank" rel="noreferrer" className="font-mono text-sm text-muted transition-colors hover:text-accent-ink">GitHub ↗</a>
+            <a href={profile.linkedin} target="_blank" rel="noreferrer" className="font-mono text-sm text-muted transition-colors hover:text-accent-ink">LinkedIn ↗</a>
           </motion.div>
         </div>
       </section>
 
       <section id="about" className="relative z-10 px-6 py-28">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-5xl">
           <Heading n={1}>About</Heading>
-          {profile.about.map((p, i) => (<Reveal key={i} delay={i * 0.1}><p className="mb-5 text-lg leading-relaxed text-muted">{p}</p></Reveal>))}
+          <Reveal><AboutCard a={profile.about} /></Reveal>
         </div>
       </section>
 
@@ -171,6 +199,14 @@ export default function Portfolio() {
                     <span className="text-sm text-accent-ink">{p.role}</span>
                   </div>
                   <p className="mt-3 text-muted">{p.blurb}</p>
+                  {p.image && (
+                    <a href={p.links[0].href} target="_blank" rel="noreferrer" className="group mt-6 block overflow-hidden rounded-xl border border-line">
+                      <div className="truncate border-b border-line bg-base/60 px-4 py-2 font-mono text-xs text-muted">{p.links[0].href.replace("https://", "")}</div>
+                      <div className="overflow-hidden">
+                        <img src={p.image} alt={`${p.name} preview`} loading="lazy" className="w-full transition-transform duration-700 group-hover:scale-[1.03]" />
+                      </div>
+                    </a>
+                  )}
                   <ul className="mt-5 space-y-2">
                     {p.points.map((pt) => (<li key={pt} className="flex gap-3"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />{pt}</li>))}
                   </ul>
@@ -209,11 +245,14 @@ export default function Portfolio() {
       <section id="contact" className="relative z-10 bg-surface/50 px-6 py-28 text-center">
         <Reveal>
           <h2 className="font-display text-3xl font-semibold md:text-5xl">Let’s build something <span className="rgb-text">useful</span></h2>
-          <p className="mt-4 text-muted">Open to backend roles and interesting collaborations.</p>
+          <p className="mx-auto mt-4 max-w-xl text-muted">{contact.line}</p>
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            {contact.open.map((o) => (<span key={o} className="rounded-md border border-line bg-surface/60 px-3 py-1.5 font-mono text-sm text-accent-ink">{o}</span>))}
+          </div>
           <a href={`mailto:${profile.email}`} className="mt-8 inline-block rounded-full bg-accent px-8 py-3 font-medium text-on-accent transition-transform hover:scale-105">{profile.email}</a>
           <div className="mt-6 flex justify-center gap-6 text-muted">
-            <a href={profile.github} className="transition-colors hover:text-accent-ink">GitHub</a>
-            <a href={profile.linkedin} className="transition-colors hover:text-accent-ink">LinkedIn</a>
+            <a href={profile.github} target="_blank" rel="noreferrer" className="transition-colors hover:text-accent-ink">GitHub</a>
+            <a href={profile.linkedin} target="_blank" rel="noreferrer" className="transition-colors hover:text-accent-ink">LinkedIn</a>
           </div>
         </Reveal>
         <p className="mt-20 text-xs text-muted/70">© {new Date().getFullYear()} {profile.name}</p>

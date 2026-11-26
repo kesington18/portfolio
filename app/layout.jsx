@@ -5,8 +5,8 @@ const jb = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jb" });
 const plex = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-plex" });
 
 export const metadata = {
-  title: "Abdulwakeel Kesington | Backend Software Engineer",
-  description: "Backend engineer building reliable APIs, data systems and real-world platforms.",
+  title: "Abdulwakeel Kesington | Software Engineer",
+  description: "Software engineer building reliable APIs, data systems and real-world platforms.",
 };
 
 const boot = `try{var c=JSON.parse(localStorage.getItem("pf-cfg"));if(c&&c.theme)document.documentElement.dataset.theme=c.theme}catch(e){}`;
