@@ -23,7 +23,7 @@ export const projects = [
   {
     name: "COMPSSA Hostel Hub",
     role: "Sole backend engineer",
-    image: "/previews/compssa-hostel-hub.webp",
+    image: "/previews/compssa-hostel-hub.webp", imageW: 1600, imageH: 683,
     blurb: "Hostel allocation platform for University of Lagos College of Medicine students (200–600 level). A separate React/Next.js team consumes the REST API I built.",
     points: [
       "Two-phase allocation engine: rule-based placement for 300–600L, random draw for 200L, with roommate pairs placed together and an automatic waitlist.",
@@ -36,7 +36,7 @@ export const projects = [
   {
     name: "Noticeboard",
     role: "Engineer, Telegram ingestion, push notifications & deployment",
-    image: "/previews/noticeboard.webp",
+    image: "/previews/noticeboard.webp", imageW: 1600, imageH: 728,
     blurb: "A digital information radiator for student environments: it keeps the key information created by the admin in one place, so students don’t have to search group chats for it.",
     points: [
       "Built the Telegram ingestion pipeline and the single-use-code flow that lets a class governor claim their group.",

@@ -2,9 +2,12 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "motion/react";
 import { profile, projects, skills, titles, contact } from "./data";
-import CodeRain from "./CodeRain";
-import Bubbles from "./Bubbles";
+import dynamic from "next/dynamic";
+import Image from "next/image";
 import Typewriter from "./Typewriter";
+// heavy background effects load after the page is interactive
+const CodeRain = dynamic(() => import("./CodeRain"), { ssr: false });
+const Bubbles = dynamic(() => import("./Bubbles"), { ssr: false });
 
 const ease = [0.22, 1, 0.36, 1];
 const ACCENTS = [["Ice", "#8ec5e6"], ["Mint", "#8fd6b8"], ["Lilac", "#b5a6ee"], ["Peach", "#f2b69a"], ["Silver", "#c9d0d8"]];
@@ -98,7 +101,7 @@ const Punc = ({ children }) => <span className="text-muted">{children}</span>;
 
 function AboutCard({ a }) {
   return (
-    <div onMouseMove={glow} className="card max-w-4xl rounded-2xl border border-line bg-surface/70 p-6 font-mono text-sm leading-7 backdrop-blur md:p-8">
+    <div onMouseMove={glow} className="card w-full rounded-2xl border border-line bg-surface/70 p-6 font-mono text-sm leading-7 backdrop-blur md:p-10 md:text-base md:leading-8">
       <TermBar label="about.config.py" />
       <p className="text-muted"># who I am</p>
       <p className="text-ink">{'"""'}{a.intro}{'"""'}</p>
@@ -121,14 +124,20 @@ function AboutCard({ a }) {
 export default function Portfolio() {
   const [cfg, setCfg] = useState(DEFAULTS);
   const [ready, setReady] = useState(false);
+  const [fx, setFx] = useState(false);
   const spot = useRef(null);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
   const set = (p) => setCfg((c) => ({ ...c, ...p }));
 
   useEffect(() => {
-    try { const s = JSON.parse(localStorage.getItem("pf-cfg")); if (s) setCfg({ ...DEFAULTS, ...s }); } catch {}
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem("pf-cfg")); } catch {}
+    if (saved) setCfg({ ...DEFAULTS, ...saved });
+    else if (window.innerWidth < 768) setCfg({ ...DEFAULTS, rain: false }); // lighter on phones
     setReady(true);
+    const t = setTimeout(() => setFx(true), 1200); // start effects after first paint
+    return () => clearTimeout(t);
   }, []);
   useEffect(() => {
     if (!ready) return;
@@ -147,8 +156,8 @@ export default function Portfolio() {
   return (
     <main className="relative overflow-x-clip">
       <motion.div style={{ scaleX: progress }} className="rgb-bar fixed left-0 right-0 top-0 z-50 h-0.5 origin-left" />
-      {cfg.rain && <CodeRain />}
-      {cfg.bubbles && <Bubbles />}
+      {fx && cfg.rain && <CodeRain />}
+      {fx && cfg.bubbles && <Bubbles />}
       {cfg.spotlight && <div ref={spot} aria-hidden className="spot pointer-events-none fixed inset-0 z-0" />}
 
       <nav className="fixed left-1/2 top-4 z-40 flex -translate-x-1/2 items-center gap-5 rounded-full border border-line/70 bg-surface/70 px-5 py-2 text-sm text-muted backdrop-blur-xl">
@@ -203,7 +212,7 @@ export default function Portfolio() {
                     <a href={p.links[0].href} target="_blank" rel="noreferrer" className="group mt-6 block overflow-hidden rounded-xl border border-line">
                       <div className="truncate border-b border-line bg-base/60 px-4 py-2 font-mono text-xs text-muted">{p.links[0].href.replace("https://", "")}</div>
                       <div className="overflow-hidden">
-                        <img src={p.image} alt={`${p.name} preview`} loading="lazy" className="w-full transition-transform duration-700 group-hover:scale-[1.03]" />
+                        <Image src={p.image} alt={`${p.name} preview`} width={p.imageW} height={p.imageH} sizes="(min-width: 1024px) 940px, 100vw" className="h-auto w-full transition-transform duration-700 group-hover:scale-[1.03]" />
                       </div>
                     </a>
                   )}

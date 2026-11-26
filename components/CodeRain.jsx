@@ -11,7 +11,7 @@ export default function CodeRain() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const c = ref.current, ctx = c.getContext("2d");
     const LH = 18, CW = 17;
-    let cols = [], w = 0, h = 0, id, last = 0, t = 0;
+    let cols = [], w = 0, h = 0, id, last = 0;
     const tok = () => TOKENS[(Math.random() * TOKENS.length) | 0] + " ";
     const resize = () => {
       w = c.width = innerWidth; h = c.height = innerHeight;
@@ -20,8 +20,8 @@ export default function CodeRain() {
     };
     const frame = (now) => {
       id = requestAnimationFrame(frame);
-      if (now - last < 55) return; // ~18fps keeps it light
-      last = now; t += 1;
+      if (document.hidden || now - last < 55) return; // idle when the tab is hidden; ~18fps otherwise
+      last = now;
       const cs = getComputedStyle(document.documentElement);
       const [br, bg, bb] = hex(cs.getPropertyValue("--c-base"));
       ctx.fillStyle = `rgba(${br},${bg},${bb},0.12)`; ctx.fillRect(0, 0, w, h);

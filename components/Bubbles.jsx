@@ -5,7 +5,8 @@ import { motion } from "motion/react";
 export default function Bubbles() {
   const [b, setB] = useState([]);
   useEffect(() => {
-    setB(Array.from({ length: 16 }, (_, i) => ({
+    const n = window.innerWidth < 768 ? 7 : 14; // fewer on phones
+    setB(Array.from({ length: n }, (_, i) => ({
       id: i, size: 18 + Math.random() * 84, left: Math.random() * 100,
       dur: 14 + Math.random() * 16, delay: Math.random() * 12, sway: 12 + Math.random() * 32,
     })));
